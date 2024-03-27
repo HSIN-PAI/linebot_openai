@@ -14,6 +14,13 @@ import datetime
 import openai
 import time
 import traceback
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.document_loaders import TextLoader, PyPDFLoader
+from langchain.text_splitter import  RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+import os
 #======python的函數庫==========
 
 app = Flask(__name__)
@@ -24,14 +31,33 @@ line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
+# 讀取檔案
+file_path = "player_data.pdf"
+loader = file_path.endswith(".pdf") and PyPDFLoader(file_path) or TextLoader(file_path)
+
+# 選擇 splitter 並將文字切分成多個 chunk 
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0) 
+texts = loader.load_and_split(splitter)
+
+# 建立本地 db
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(texts, embeddings)
 
 
-def GPT_response(text):
+def GPT_response(query):
+    # 對話 chain
+    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+    chat_history = []
+    result = qa({"question": query + ' (用繁體中文回答)', "chat_history": chat_history})
+    print('A:', result['answer'])
+    answer = result['answer']
+    '''
     # 接收回應
     response = openai.Completion.create(model="gpt-3.5-turbo-instruct", prompt=text, temperature=0.5, max_tokens=500)
     print(response)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。','')
+    '''
     return answer
 
 
