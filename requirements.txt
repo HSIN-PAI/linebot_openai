@@ -5,3 +5,4 @@ gunicorn
 langchain==0.0.308
 pypdf
 chromadb==0.3.29
+tiktoken
