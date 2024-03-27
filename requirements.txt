@@ -3,4 +3,4 @@ flask
 openai < 1.0.0
 gunicorn
 langchain
-PyPDFLoader
+langchain.document_loaders
