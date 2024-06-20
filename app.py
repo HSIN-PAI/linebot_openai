@@ -40,13 +40,13 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
 texts = loader.load_and_split(splitter)
 
 # 建立本地 db
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 vectorstore = Chroma.from_documents(texts, embeddings)
 chat_history = []
 
 def GPT_response(query):
     # 對話 chain
-    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
+    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0,model="gpt-3.5-turbo-instruct"), vectorstore.as_retriever())
     result = qa({"question": query + ' (用繁體中文回答)', "chat_history": chat_history})
     print('A:', result['answer'])
     answer = result['answer']
