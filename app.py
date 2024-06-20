@@ -42,15 +42,15 @@ texts = loader.load_and_split(splitter)
 # 建立本地 db
 embeddings = OpenAIEmbeddings()
 vectorstore = Chroma.from_documents(texts, embeddings)
-
+chat_history = []
 
 def GPT_response(query):
     # 對話 chain
     qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0), vectorstore.as_retriever())
-    chat_history = []
     result = qa({"question": query + ' (用繁體中文回答)', "chat_history": chat_history})
     print('A:', result['answer'])
     answer = result['answer']
+    chat_history.append((query, result['answer']))
     '''
     # 接收回應
     response = openai.Completion.create(model="gpt-3.5-turbo-instruct", prompt=text, temperature=0.5, max_tokens=500)
