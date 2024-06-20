@@ -40,7 +40,7 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
 texts = loader.load_and_split(splitter)
 
 # 建立本地 db
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 vectorstore = Chroma.from_documents(texts, embeddings)
 chat_history = []
 
