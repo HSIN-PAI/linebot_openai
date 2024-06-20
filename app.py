@@ -46,7 +46,7 @@ chat_history = []
 
 def GPT_response(query):
     # 對話 chain
-    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0,model="gpt-3.5-turbo-instruct"), vectorstore.as_retriever())
+    qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0,model="gpt-4o"), vectorstore.as_retriever())
     result = qa({"question": query + ' (用繁體中文回答)', "chat_history": chat_history})
     print('A:', result['answer'])
     answer = result['answer']
