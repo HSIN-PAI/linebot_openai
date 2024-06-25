@@ -15,7 +15,7 @@ import openai
 import time
 import traceback
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.document_loaders import TextLoader, PyPDFLoader, csv_loader
+from langchain.document_loaders import TextLoader, PyPDFLoader, CSVLoader
 from langchain.text_splitter import  RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
@@ -33,7 +33,7 @@ handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 openai.api_key = os.getenv('OPENAI_API_KEY')
 # 讀取檔案
 file_path = "Player_Tradition_lion.csv"
-loader = file_path.endswith(".csv") and csv_loader(file_path) or TextLoader(file_path)
+loader = file_path.endswith(".csv") and CSVLoader(file_path) or TextLoader(file_path)
 
 # 選擇 splitter 並將文字切分成多個 chunk 
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0) 
