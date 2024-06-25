@@ -32,8 +32,8 @@ handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
 # 讀取檔案
-file_path = "Player_Tradition_lion.csv"
-loader = file_path.endswith(".csv") and CSVLoader(file_path) or TextLoader(file_path)
+file_path = "player_data.pdf"
+loader = file_path.endswith(".pdf") and PyPDFLoader(file_path) or TextLoader(file_path)
 
 # 選擇 splitter 並將文字切分成多個 chunk 
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0) 
